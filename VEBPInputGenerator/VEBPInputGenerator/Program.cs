@@ -10,56 +10,14 @@ namespace VEBPInputGenerator
 {
     public static class GlobalVar
     {
-        public const int M = 6;
-        public const int N = 6;
+        public const int M = 5;
+        public const int N = 5;
         public const int numberOfSameBits = 18;
         public static UInt32 numbOfElements=0;
     }
     class Program
     {
-        static int inverseEBP(int EBPInt,ref int[] maskArray)
-        {
-            int resultInt=0;
-            BitVector32 EBPBits = new BitVector32(EBPInt);
-            BitVector32 tempEBPBits = new BitVector32(0);
-
-            for (int index=0; index<(GlobalVar.M-1)*GlobalVar.N; index++)
-            {
-                int i = index / GlobalVar.M;
-                int j = index % GlobalVar.M;
-                int tempIndex = GlobalVar.M * (1 + i) - j - 1; //GlobalVar.M - 1 - j + GlobalVar.M * i;
-                //int originalIndex = (int)Math.Pow(2, (double)index);
-                //int newIndex = (int)Math.Pow(2, (double)tempIndex);
-                tempEBPBits[maskArray[tempIndex]] = EBPBits[maskArray[index]];            
-            }
-            resultInt = tempEBPBits.Data;       
-            return resultInt;
-        }
-
-        static int switchEBP(int EBPInt)
-        {
-            int resultInt = 0;
-
-
-            return resultInt;
-        }
-
-        static int invSwitchEBP(int EBPInt)
-        {
-            int resultInt = 0;
-
-
-            return resultInt;
-        }
-
-        static int rotateEBP(int EBPInt)
-        {
-            int resultInt = 0;
-
-
-            return resultInt;
-        }
-
+        
         static void Main(string[] args)
         {
 
@@ -72,7 +30,7 @@ namespace VEBPInputGenerator
                 maskArray[i] = BitVector32.CreateMask(maskArray[i - 1]);
             }
 
-
+            
             UInt32 vebpInt;
             //UInt32 hebpInt;
             Dictionary<UInt32, HashSet<UInt32>> tempDict = new Dictionary<UInt32, HashSet<UInt32>>();
@@ -80,10 +38,14 @@ namespace VEBPInputGenerator
             using (BinaryReader reader = new BinaryReader(File.Open("VEBPSet_"+GlobalVar.M+".bin", FileMode.Open)))
             {
                 long length = reader.BaseStream.Length;
-                Console.WriteLine(length/4);
+                //Console.WriteLine(length/4);
+                
                 while(reader.BaseStream.Position != length)
                 {
                     vebpInt = reader.ReadUInt32();
+                    switchEBP(300, ref maskArray);
+                    inverseEBP(300, ref maskArray);
+                    Console.ReadKey();
                     //hebpInt = reader.ReadUInt32();
                     //Console.WriteLine(vebpInt + " " + hebpInt);
                     //int result = inverseEBP((int)vebpInt);
@@ -117,46 +79,99 @@ namespace VEBPInputGenerator
 
 
 
-            SortedDictionary<int, int> histogramDict = new SortedDictionary<int, int>();
-            using (StreamWriter summaryFile = new StreamWriter("summaryFile_" + GlobalVar.M + ".txt"))
-            {
-                int lineNumber = 1;
-                //int maxNumb = -1;
-                summaryFile.WriteLine("GridSize: "+GlobalVar.M+"  fixedNumberOfBits: "+GlobalVar.numberOfSameBits);
-                foreach (var eachBits in tempDict)
-                {
-                    summaryFile.Write(lineNumber+".  ");
-                    lineNumber++;
-                    BitVector32 writeBits = new BitVector32((int)eachBits.Key);
-                    for (int i = 0; i < GlobalVar.numberOfSameBits; i++)
-                    {
-                        if (writeBits[maskArray[i]])
-                            summaryFile.Write(1);
-                        else
-                            summaryFile.Write(0);
-                    }
-                    //summaryFile.Write(eachBits.Key);    
-                    summaryFile.WriteLine(" : "+eachBits.Value.Count);
+            //SortedDictionary<int, int> histogramDict = new SortedDictionary<int, int>();
+            //using (StreamWriter summaryFile = new StreamWriter("summaryFile_" + GlobalVar.M + ".txt"))
+            //{
+            //    int lineNumber = 1;
+            //    //int maxNumb = -1;
+            //    summaryFile.WriteLine("GridSize: "+GlobalVar.M+"  fixedNumberOfBits: "+GlobalVar.numberOfSameBits);
+            //    foreach (var eachBits in tempDict)
+            //    {
+            //        summaryFile.Write(lineNumber+".  ");
+            //        lineNumber++;
+            //        BitVector32 writeBits = new BitVector32((int)eachBits.Key);
+            //        for (int i = 0; i < GlobalVar.numberOfSameBits; i++)
+            //        {
+            //            if (writeBits[maskArray[i]])
+            //                summaryFile.Write(1);
+            //            else
+            //                summaryFile.Write(0);
+            //        }
+            //        //summaryFile.Write(eachBits.Key);    
+            //        summaryFile.WriteLine(" : "+eachBits.Value.Count);
 
 
-                    if (histogramDict.ContainsKey(eachBits.Value.Count))
-                        histogramDict[eachBits.Value.Count]++;
-                    else
-                        histogramDict.Add(eachBits.Value.Count, 1);
-                    //if (maxNumb < eachBits.Value.Count) maxNumb = eachBits.Value.Count;
-                }
-                //Console.WriteLine("maxNumb: " + maxNumb);
-            }
+            //        if (histogramDict.ContainsKey(eachBits.Value.Count))
+            //            histogramDict[eachBits.Value.Count]++;
+            //        else
+            //            histogramDict.Add(eachBits.Value.Count, 1);
+            //        //if (maxNumb < eachBits.Value.Count) maxNumb = eachBits.Value.Count;
+            //    }
+            //    //Console.WriteLine("maxNumb: " + maxNumb);
+            //}
 
-            using (StreamWriter histogramFile = new StreamWriter("histogramFile_" + GlobalVar.M + ".txt"))
-            {
-                foreach (var eachEle in histogramDict)
-                    histogramFile.WriteLine(eachEle.Key+" "+eachEle.Value);
-            }
+            //using (StreamWriter histogramFile = new StreamWriter("histogramFile_" + GlobalVar.M + ".txt"))
+            //{
+            //    foreach (var eachEle in histogramDict)
+            //        histogramFile.WriteLine(eachEle.Key+" "+eachEle.Value);
+            //}
 
 
-                Console.WriteLine("Press enterkey to finish...");
+            Console.WriteLine("Press enterkey to finish...");
             Console.ReadLine();
+        }
+        static int inverseEBP(int EBPInt, ref int[] maskArray)
+        {
+            int resultInt = 0;
+            BitVector32 EBPBits = new BitVector32(EBPInt);
+            BitVector32 tempEBPBits = new BitVector32(0);
+
+            for (int index = 0; index < (GlobalVar.M - 1) * GlobalVar.N; index++)
+            {
+                int i = index / GlobalVar.M;
+                int j = index % GlobalVar.M;
+                int newIndex = GlobalVar.M * (1 + i) - j - 1; //GlobalVar.M - 1 - j + GlobalVar.M * i;
+                tempEBPBits[maskArray[newIndex]] = EBPBits[maskArray[index]];
+            }
+
+            resultInt = tempEBPBits.Data;
+            return resultInt;
+        }
+
+        static int switchEBP(int EBPInt, ref int[] maskArray)
+        {
+            int resultInt = 0;
+            BitVector32 EBPBits = new BitVector32(EBPInt);
+            BitVector32 tempEBPBits = new BitVector32(0);
+
+            for (int index = 0; index < (GlobalVar.M - 1) * GlobalVar.N; index++)
+            {
+                int i = index % GlobalVar.M;
+                int j = index / GlobalVar.M;
+                int newJ = GlobalVar.N - 1 - j;
+                int newIndex = (newJ - 1) * GlobalVar.M + i;
+                tempEBPBits[maskArray[newIndex]] = EBPBits[maskArray[index]];
+
+            }
+
+            resultInt = tempEBPBits.Data;
+            return resultInt;
+        }
+
+        static int invSwitchEBP(int EBPInt, ref int[] maskArray)
+        {
+            int resultInt = 0;
+            resultInt = inverseEBP(switchEBP(EBPInt, ref maskArray), ref maskArray);
+
+            return resultInt;
+        }
+
+        static int rotateEBP(int EBPInt, ref int[] maskArray)
+        {
+            int resultInt = 0;
+            resultInt = inverseEBP(EBPInt, ref maskArray);
+
+            return resultInt;
         }
     }
 }
