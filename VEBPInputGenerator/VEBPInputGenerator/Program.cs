@@ -12,7 +12,7 @@ namespace VEBPInputGenerator
     {
         public const int M = 5;
         public const int N = 5;
-        public const int numberOfSameBits = 18;
+        public const int numberOfSameBits = 14;
         public static UInt32 numbOfElements=0;
     }
     class Program
@@ -43,9 +43,6 @@ namespace VEBPInputGenerator
                 while(reader.BaseStream.Position != length)
                 {
                     vebpInt = reader.ReadUInt32();
-                    switchEBP(300, ref maskArray);
-                    inverseEBP(300, ref maskArray);
-                    Console.ReadKey();
                     //hebpInt = reader.ReadUInt32();
                     //Console.WriteLine(vebpInt + " " + hebpInt);
                     //int result = inverseEBP((int)vebpInt);
@@ -77,6 +74,39 @@ namespace VEBPInputGenerator
                 }             
             }
 
+            SortedDictionary<int, List<HashSet<uint>>> histogramDict = new SortedDictionary<int, List<HashSet<uint>>>();
+            foreach (var eachHashSet in tempDict)
+            {
+                int NumbOfVEBPs = eachHashSet.Value.Count;
+                HashSet<uint> tempHashSet = eachHashSet.Value;
+
+                if (histogramDict.ContainsKey(NumbOfVEBPs))
+                {
+                    histogramDict[NumbOfVEBPs].Add(tempHashSet);
+                }
+                else
+                {
+                    List<HashSet<uint>> tempList = new List<HashSet<uint>>();
+                    tempList.Add(tempHashSet);
+                    histogramDict.Add(NumbOfVEBPs, tempList);
+                }
+            }
+
+            int fileNumb = 0;
+            foreach (var eachDict in histogramDict)
+            {
+                foreach (HashSet<uint> eachVEBPSet in eachDict.Value)
+                {
+                    using (BinaryWriter binaryFileWriter = new BinaryWriter(File.Open(GlobalVar.M+"x"+GlobalVar.M+"Files\\" + fileNumb + ".bin", FileMode.Create)))
+                    {
+                        foreach (uint eachVebp in eachVEBPSet)
+                        {
+                            binaryFileWriter.Write(eachVebp);
+                        }
+                    }
+                    fileNumb++;
+                }
+            }
 
 
             //SortedDictionary<int, int> histogramDict = new SortedDictionary<int, int>();
