@@ -10,9 +10,9 @@ namespace VEBPInputGenerator
 {
     public static class GlobalVar
     {
-        public const int M = 5;
-        public const int N = 5;
-        public const int numberOfSameBits = 14;
+        public const int M = 6;
+        public const int N = 6;
+        public const int numberOfSameBits = 18;
         public static UInt32 numbOfElements=0;
     }
     class Program
