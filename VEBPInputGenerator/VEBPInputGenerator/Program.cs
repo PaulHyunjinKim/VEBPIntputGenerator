@@ -21,8 +21,6 @@ namespace VEBPInputGenerator
         static void Main(string[] args)
         {
 
-            
-            HashSet<UInt32> testHash = new HashSet<UInt32>();
             int[] maskArray = new int[GlobalVar.M * (GlobalVar.N - 1)];
             maskArray[0] = BitVector32.CreateMask();
             for(int i=1; i<GlobalVar.M*(GlobalVar.N-1); i++)
